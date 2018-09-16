@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>parent</artifactId>
+        <groupId>nl.ertai.elytron.example</groupId>
+        <version>1.0.0-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>ear</artifactId>
+    <packaging>ear</packaging>
+
+    <build>
+        <finalName>elytron-example</finalName>
+        <plugins>
+            <plugin>
+                <artifactId>maven-ear-plugin</artifactId>
+                <configuration>
+                    <modules>
+                        <webModule>
+                            <groupId>nl.ertai.elytron.example</groupId>
+                            <artifactId>war</artifactId>
+                            <contextRoot>/</contextRoot>
+                        </webModule>
+                        <ejbModule>
+                            <groupId>nl.ertai.elytron.example</groupId>
+                            <artifactId>ejb</artifactId>
+                        </ejbModule>
+                    </modules>
+                    <displayName>Elytron Example</displayName>
+                    <generateApplicationXml>true</generateApplicationXml>
+                    <defaultLibBundleDir>lib</defaultLibBundleDir>
+                    <skinnyWars>true</skinnyWars>
+                    <!-- This is for IntelliJ. It generates invalid ear's otherwise -->
+                    <outputFileNameMapping>@{artifactId}@-@{version}@@{dashClassifier?}@.@{extension}@</outputFileNameMapping>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <dependencies>
+        <dependency>
+            <groupId>nl.ertai.elytron.example</groupId>
+            <artifactId>war</artifactId>
+            <type>war</type>
+        </dependency>
+        <dependency>
+            <groupId>nl.ertai.elytron.example</groupId>
+            <artifactId>ejb</artifactId>
+            <type>ejb</type>
+        </dependency>
+    </dependencies>
+
+</project>

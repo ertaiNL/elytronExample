@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module xmlns="urn:jboss:module:1.5" name="nl.ertai.elytron.example.security-module">
+
+    <resources>
+        <resource-root path="security-module.jar"/>
+    </resources>
+
+    <dependencies>
+        <module name="org.wildfly.security.elytron"/>
+        <module name="org.wildfly.extension.elytron"/>
+    </dependencies>
+</module>

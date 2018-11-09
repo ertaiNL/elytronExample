@@ -13,8 +13,8 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.wildfly.security</groupId>
-            <artifactId>wildfly-elytron</artifactId>
+            <groupId>org.wildfly.core</groupId>
+            <artifactId>wildfly-elytron-integration</artifactId>
         </dependency>
 
         <dependency>

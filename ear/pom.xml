@@ -13,7 +13,6 @@
     <packaging>ear</packaging>
 
     <build>
-        <finalName>elytron-example</finalName>
         <plugins>
             <plugin>
                 <artifactId>maven-ear-plugin</artifactId>

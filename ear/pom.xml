@@ -31,6 +31,8 @@
                         </ejbModule>
 
                     </modules>
+                    <!-- This is for IntelliJ. It generates invalid ear's otherwise -->
+                    <outputFileNameMapping>@{artifactId}@-@{version}@@{dashClassifier?}@.@{extension}@</outputFileNameMapping>
                 </configuration>
             </plugin>
         </plugins>

@@ -1,0 +1,11 @@
+# remove the undertow configuration with the http-authentication-factory
+/subsystem=undertow/application-security-domain=ExampleDomain:remove
+/subsystem=elytron/http-authentication-factory=ExampleDomain-http-authenticator:remove
+
+# remove the ejb3 configuration with the sasl-authentication-factory
+/subsystem=ejb3/application-security-domain=ExampleDomain:remove
+/subsystem=elytron/sasl-authentication-factory=ExampleDomain-sasl-authenticator:remove
+
+#remove the domain and realm
+/subsystem=elytron/security-domain=ExampleDomain:remove
+/subsystem=elytron/custom-realm=ExampleRealm:remove

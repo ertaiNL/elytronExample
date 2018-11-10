@@ -4,10 +4,12 @@
 #Define the domain used in the application
 /subsystem=elytron/security-domain=ExampleDomain:add(realms=[{"realm"="ExampleRealm","role-decoder"="groups-to-roles"}],permission-mapper="default-permission-mapper",default-realm="ExampleRealm")
 
-#Add the domain for the webservlet
+#Add the domain for the webservlet and set it default
 /subsystem=elytron/http-authentication-factory=ExampleDomain-http-authenticator:add(http-server-mechanism-factory=global, security-domain=ExampleDomain, mechanism-configurations=[{mechanism-name=BASIC}])
 /subsystem=undertow/application-security-domain=ExampleDomain:add(http-authentication-factory=ExampleDomain-http-authenticator)
+/subsystem=undertow:write-attribute(name=default-security-domain, value=ExampleDomain)
 
 #Add the domain for EJB's
 /subsystem=elytron/sasl-authentication-factory=ExampleDomain-sasl-authenticator:add(sasl-server-factory=configured, security-domain=ExampleDomain, mechanism-configurations=[{mechanism-name=BASIC}])
 /subsystem=ejb3/application-security-domain=ExampleDomain:add(security-domain=ExampleDomain)
+/subsystem=ejb3:write-attribute(name=default-security-domain, value=ExampleDomain)

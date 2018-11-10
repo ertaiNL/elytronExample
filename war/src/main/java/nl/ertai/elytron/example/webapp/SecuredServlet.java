@@ -16,7 +16,7 @@ import java.io.PrintWriter;
 import static nl.ertai.elytron.example.ejb.SecuredService.ADMIN_ROLE;
 import static nl.ertai.elytron.example.ejb.SecuredService.USER_ROLE;
 
-@WebServlet("/secured")
+@WebServlet("/")
 @ServletSecurity(httpMethodConstraints = { @HttpMethodConstraint(value = "GET", rolesAllowed = { "User" }) })
 public class SecuredServlet extends HttpServlet {
 

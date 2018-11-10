@@ -36,14 +36,14 @@
         <dependencies>
             <dependency>
                 <groupId>nl.ertai.elytron.example</groupId>
-                <artifactId>war</artifactId>
+                <artifactId>elytron-example-war</artifactId>
                 <version>${project.version}</version>
                 <type>war</type>
             </dependency>
 
             <dependency>
                 <groupId>nl.ertai.elytron.example</groupId>
-                <artifactId>ejb</artifactId>
+                <artifactId>elytron-example-ejb</artifactId>
                 <version>${project.version}</version>
                 <type>ejb</type>
             </dependency>

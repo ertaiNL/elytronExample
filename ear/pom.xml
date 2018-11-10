@@ -9,7 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>ear</artifactId>
+    <artifactId>elytron-example-ear</artifactId>
     <packaging>ear</packaging>
 
     <build>
@@ -18,22 +18,19 @@
                 <artifactId>maven-ear-plugin</artifactId>
                 <configuration>
                     <modules>
+
                         <webModule>
                             <groupId>nl.ertai.elytron.example</groupId>
-                            <artifactId>war</artifactId>
+                            <artifactId>elytron-example-war</artifactId>
                             <contextRoot>/</contextRoot>
                         </webModule>
+
                         <ejbModule>
                             <groupId>nl.ertai.elytron.example</groupId>
-                            <artifactId>ejb</artifactId>
+                            <artifactId>elytron-example-ejb</artifactId>
                         </ejbModule>
+
                     </modules>
-                    <displayName>Elytron Example</displayName>
-                    <generateApplicationXml>true</generateApplicationXml>
-                    <defaultLibBundleDir>lib</defaultLibBundleDir>
-                    <skinnyWars>true</skinnyWars>
-                    <!-- This is for IntelliJ. It generates invalid ear's otherwise -->
-                    <outputFileNameMapping>@{artifactId}@-@{version}@@{dashClassifier?}@.@{extension}@</outputFileNameMapping>
                 </configuration>
             </plugin>
         </plugins>
@@ -42,12 +39,13 @@
     <dependencies>
         <dependency>
             <groupId>nl.ertai.elytron.example</groupId>
-            <artifactId>war</artifactId>
+            <artifactId>elytron-example-war</artifactId>
             <type>war</type>
         </dependency>
+
         <dependency>
             <groupId>nl.ertai.elytron.example</groupId>
-            <artifactId>ejb</artifactId>
+            <artifactId>elytron-example-ejb</artifactId>
             <type>ejb</type>
         </dependency>
     </dependencies>

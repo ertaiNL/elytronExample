@@ -1,7 +1,6 @@
 package nl.ertai.elytron.example.realms;
 
 import org.wildfly.extension.elytron.Configurable;
-
 import org.wildfly.security.auth.SupportLevel;
 import org.wildfly.security.auth.server.RealmIdentity;
 import org.wildfly.security.auth.server.SecurityRealm;
@@ -13,9 +12,7 @@ import org.wildfly.security.evidence.PasswordGuessEvidence;
 
 import java.security.Principal;
 import java.security.spec.AlgorithmParameterSpec;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Example of custom-realm for WildFly Elytron.
@@ -39,8 +36,10 @@ import java.util.Map;
 public class ExampleRealm implements SecurityRealm, Configurable {
 
     private static final String GROUPS_ATTRIBUTE = "groups";
+    private static final String USER_ADMIN = "admin";
+    private static final String USER_USER = "user";
 
-    private String defaultGroup;
+    private List<String> defaultGroups;
 
     /**
      * This function allowes you to use the parameters given in the Elytron Configuration to influence your realm
@@ -50,7 +49,8 @@ public class ExampleRealm implements SecurityRealm, Configurable {
      * @param configuration A Key-Value-Map with all the parameters
      */
     public void initialize(Map<String, String> configuration) {
-        defaultGroup = configuration.get("DefaultGroup");
+        String configuredGroup = configuration.get("DefaultGroup");
+        defaultGroups = Arrays.asList("User", configuredGroup);
     }
 
     /**
@@ -168,7 +168,11 @@ public class ExampleRealm implements SecurityRealm, Configurable {
              */
             @Override
             public AuthorizationIdentity getAuthorizationIdentity() {
-                return AuthorizationIdentity.basicIdentity(new MapAttributes(Collections.singletonMap(GROUPS_ATTRIBUTE, Collections.singleton( defaultGroup ))));
+                List<String> groups = new ArrayList<>(defaultGroups);
+                if (principal.getName().equals(USER_ADMIN)) {
+                    groups.add("Admin");
+                }
+                return AuthorizationIdentity.basicIdentity(new MapAttributes(Collections.singletonMap(GROUPS_ATTRIBUTE, groups)));
             }
         };
     }
@@ -181,7 +185,8 @@ public class ExampleRealm implements SecurityRealm, Configurable {
      * @return              Is this combo correct?
      */
     private boolean checkUserCredentials(final String user, final char[] password) {
-        return (("admin".equals(user)) && Arrays.equals("admin".toCharArray(), password));
+        return ((USER_ADMIN.equals(user)) && Arrays.equals(USER_ADMIN.toCharArray(), password)) ||
+                ((USER_USER.equals(user)) && Arrays.equals(USER_USER.toCharArray(), password));
     }
 
 }

@@ -14,6 +14,15 @@
         <maven.compiler.target>1.8</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>${project.build.sourceEncoding}</project.reporting.outputEncoding>
+
+        <maven-ear-plugin.version>3.0.0</maven-ear-plugin.version>
+        <maven-war-plugin.version>3.0.1</maven-war-plugin.version>
+        <maven-ejb-plugin.version>3.2.2</maven-ejb-plugin.version>
+
+        <ejb.version>3.1</ejb.version>
+        <javaee.version>7.0</javaee.version>
+        <wildfly-elytron-integration.version>3.0.8.Final</wildfly-elytron-integration.version>
+        <wildfly-elytron.version>1.1.6.Final</wildfly-elytron.version>
     </properties>
 
     <modules>
@@ -41,30 +50,23 @@
 
             <!-- Third party -->
             <dependency>
-                <groupId>javax.servlet</groupId>
-                <artifactId>javax.servlet-api</artifactId>
-                <version>4.0.0</version>
-                <scope>provided</scope>
-            </dependency>
-
-            <dependency>
                 <groupId>javax</groupId>
                 <artifactId>javaee-api</artifactId>
-                <version>7.0</version>
+                <version>${javaee.version}</version>
                 <scope>provided</scope>
             </dependency>
 
             <dependency>
                 <groupId>org.wildfly.core</groupId>
                 <artifactId>wildfly-elytron-integration</artifactId>
-                <version>3.0.8.Final</version>
+                <version>${wildfly-elytron-integration.version}</version>
                 <scope>provided</scope>
             </dependency>
 
             <dependency>
                 <groupId>org.wildfly.security</groupId>
                 <artifactId>wildfly-elytron</artifactId>
-                <version>1.1.6.Final</version>
+                <version>${wildfly-elytron.version}</version>
                 <scope>provided</scope>
             </dependency>
         </dependencies>
@@ -75,18 +77,18 @@
             <plugins>
                 <plugin>
                     <artifactId>maven-ear-plugin</artifactId>
-                    <version>3.0.0</version>
+                    <version>${maven-ear-plugin.version}</version>
                 </plugin>
                 <plugin>
                     <artifactId>maven-ejb-plugin</artifactId>
-                    <version>3.0.1</version>
+                    <version>${maven-ejb-plugin.version}</version>
                     <configuration>
-                        <ejbVersion>3.1</ejbVersion>
+                        <ejbVersion>${ejb.version}</ejbVersion>
                     </configuration>
                 </plugin>
                 <plugin>
                     <artifactId>maven-war-plugin</artifactId>
-                    <version>3.2.2</version>
+                    <version>${maven-war-plugin.version}</version>
                     <configuration>
                         <failOnMissingWebXml>false</failOnMissingWebXml>
                     </configuration>

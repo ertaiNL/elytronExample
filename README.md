@@ -3,7 +3,9 @@
 In these examples I try to integrate parts that many separate examples try to display. 
 These examples are tested with Wildfly 11. As JBoss EAP 7.1 is based on Wildfly 11 it should also work there.
 
-WARNING: Is work in progress
+This contains examples for:
+- Usage of custom-realm
+- Usage of custom-realm-mapper
 
 ## How to build ##
 

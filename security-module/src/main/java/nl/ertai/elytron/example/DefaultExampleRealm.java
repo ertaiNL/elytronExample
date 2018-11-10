@@ -1,4 +1,4 @@
-package nl.ertai.elytron.example.realms;
+package nl.ertai.elytron.example;
 
 import org.wildfly.extension.elytron.Configurable;
 import org.wildfly.security.auth.SupportLevel;
@@ -16,6 +16,7 @@ import java.util.*;
 
 /**
  * Example of custom-realm for WildFly Elytron.
+ * A SecurityRealm is the entity that holds the user-accounts and which roles each user has.
  *
  * This class implements 2 interfaces:
  * - SecurityRealm -> This is the main part that enables Elytron to check the users
@@ -33,7 +34,7 @@ import java.util.*;
  *
  *
  */
-public class ExampleRealm implements SecurityRealm, Configurable {
+public class DefaultExampleRealm implements SecurityRealm, Configurable {
 
     private static final String GROUPS_ATTRIBUTE = "groups";
     private static final String USER_ADMIN = "admin";
@@ -108,7 +109,7 @@ public class ExampleRealm implements SecurityRealm, Configurable {
              */
             public SupportLevel getCredentialAcquireSupport(Class<? extends Credential> credentialType,
                                                             String algorithmName, AlgorithmParameterSpec parameterSpec) {
-                return ExampleRealm.this.getCredentialAcquireSupport(credentialType, algorithmName, parameterSpec);
+                return DefaultExampleRealm.this.getCredentialAcquireSupport(credentialType, algorithmName, parameterSpec);
             }
 
             /**
@@ -130,7 +131,7 @@ public class ExampleRealm implements SecurityRealm, Configurable {
              * @return      Is VerifyEvidence with this evidenceType and algorithm supported?
              */
             public SupportLevel getEvidenceVerifySupport(Class<? extends Evidence> evidenceType, String algorithmName) {
-                return ExampleRealm.this.getEvidenceVerifySupport(evidenceType, algorithmName);
+                return DefaultExampleRealm.this.getEvidenceVerifySupport(evidenceType, algorithmName);
             }
 
             /**

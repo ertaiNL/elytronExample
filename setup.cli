@@ -1,15 +1,55 @@
-#Define the custom realm from the security-module
-/subsystem=elytron/custom-realm=ExampleRealm:add(module=nl.ertai.elytron.example.security-module,class-name=nl.ertai.elytron.example.realms.ExampleRealm,configuration={"DefaultGroup"="groupName","SecondParameter"="SomeValue"})
+echo Define the custom realm from the security-module
+###
+/subsystem=elytron/custom-realm=DefaultRealm:add( \
+    module=nl.ertai.elytron.example.security-module, \
+    class-name=nl.ertai.elytron.example.DefaultExampleRealm, \
+    configuration={ \
+        "DefaultGroup"="DefaultGroup", \
+        "SecondParameter"="SomeValue" } )
+/subsystem=elytron/custom-realm=AlternativeRealm:add( \
+    module=nl.ertai.elytron.example.security-module, \
+    class-name=nl.ertai.elytron.example.AlternativeExampleRealm )
 
-#Define the domain used in the application
-/subsystem=elytron/security-domain=ExampleDomain:add(realms=[{"realm"="ExampleRealm","role-decoder"="groups-to-roles"}],permission-mapper="default-permission-mapper",default-realm="ExampleRealm")
+echo Define the custom realm mapper
+###
+/subsystem=elytron/custom-realm-mapper=ExampleRealmMapper:add( \
+    module=nl.ertai.elytron.example.security-module, \
+    class-name=nl.ertai.elytron.example.ExampleRealmMapper, \
+    configuration={ \
+        "AlternativeUsersStartWith"="alt" } )
 
-#Add the domain for the webservlet and set it default
-/subsystem=elytron/http-authentication-factory=ExampleDomain-http-authenticator:add(http-server-mechanism-factory=global, security-domain=ExampleDomain, mechanism-configurations=[{mechanism-name=BASIC}])
-/subsystem=undertow/application-security-domain=ExampleDomain:add(http-authentication-factory=ExampleDomain-http-authenticator)
-/subsystem=undertow:write-attribute(name=default-security-domain, value=ExampleDomain)
+echo Define the domain used in the application
+###
+/subsystem=elytron/security-domain=ExampleDomain:add( \
+    permission-mapper="default-permission-mapper", \
+    default-realm="DefaultRealm", \
+    realm-mapper="ExampleRealmMapper", \
+    realms=[ \
+        {"realm"="DefaultRealm","role-decoder"="groups-to-roles"}, \
+        {"realm"="AlternativeRealm","role-decoder"="groups-to-roles"} ] )
 
-#Add the domain for EJB's
-/subsystem=elytron/sasl-authentication-factory=ExampleDomain-sasl-authenticator:add(sasl-server-factory=configured, security-domain=ExampleDomain, mechanism-configurations=[{mechanism-name=BASIC}])
-/subsystem=ejb3/application-security-domain=ExampleDomain:add(security-domain=ExampleDomain)
-/subsystem=ejb3:write-attribute(name=default-security-domain, value=ExampleDomain)
+echo Add the domain for the webservlet and set it default
+###
+/subsystem=elytron/http-authentication-factory=ExampleDomain-http-authenticator:add( \
+    http-server-mechanism-factory=global, \
+    security-domain=ExampleDomain, \
+    mechanism-configurations=[ { mechanism-name=BASIC } ] )
+/subsystem=undertow/application-security-domain=ExampleDomain:add( \
+    http-authentication-factory=ExampleDomain-http-authenticator)
+/subsystem=undertow:write-attribute( \
+    name=default-security-domain, \
+    value=ExampleDomain )
+
+echo Add the domain for EJB's
+###
+/subsystem=elytron/sasl-authentication-factory=ExampleDomain-sasl-authenticator:add( \
+    sasl-server-factory=configured, \
+    security-domain=ExampleDomain, \
+    mechanism-configurations=[ { mechanism-name=BASIC } ] )
+/subsystem=ejb3/application-security-domain=ExampleDomain:add( \
+    security-domain=ExampleDomain)
+/subsystem=ejb3:write-attribute( \
+    name=default-security-domain, \
+    value=ExampleDomain)
+
+reload

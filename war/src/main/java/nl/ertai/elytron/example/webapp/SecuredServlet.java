@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 
 import static nl.ertai.elytron.example.ejb.SecuredService.ADMIN_ROLE;
+import static nl.ertai.elytron.example.ejb.SecuredService.OTHER_ROLE;
 import static nl.ertai.elytron.example.ejb.SecuredService.USER_ROLE;
 
 @WebServlet("/")
@@ -38,23 +39,25 @@ public class SecuredServlet extends HttpServlet {
 
     private void printPage(PrintWriter writer, HttpServletRequest request) {
         writer.println("<html>");
-        writer.println("  <head><title>Secured Servlet</title></head>");
-        writer.println("  <body>");
-        writer.println("    <h1>Secured Servlet</h1>");
-        writer.println("    <p>");
+        writer.println("<head><title>Secured Servlet</title></head>");
+        writer.println("<body>");
+        writer.println("<h1>Secured Servlet</h1>");
+        writer.println("<p>");
         writer.println("<b>Settings in Servlet</b>" + RETURN);
         writer.println("Username: "    + request.getUserPrincipal().getName() + RETURN);
         writer.println("User role?: "  + request.isUserInRole(USER_ROLE) + RETURN);
         writer.println("Admin role?: " + request.isUserInRole(ADMIN_ROLE) + RETURN);
+        writer.println("Other role?: " + request.isUserInRole(OTHER_ROLE) + RETURN);
         writer.println(RETURN);
         writer.println("<b>Settings in EJB</b>" + RETURN);
         writer.println("Username: "    + securedService.getUserName() + RETURN);
         writer.println("User role?: "  + securedService.hasUserRole() + RETURN);
         writer.println("Admin role?: " + securedService.hasAdminRole() + RETURN);
+        writer.println("Other role?: " + securedService.hasOtherRole() + RETURN);
         writer.println("User data?: "  + getUserSecuredData() + RETURN);
         writer.println("Admin data?: " + getAdminSecuredData() + RETURN);
-        writer.println("    </p>");
-        writer.println("  </body>");
+        writer.println("</p>");
+        writer.println("</body>");
         writer.println("</html>");
     }
 

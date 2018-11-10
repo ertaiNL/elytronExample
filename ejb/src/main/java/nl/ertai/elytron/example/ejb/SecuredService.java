@@ -11,6 +11,7 @@ public class SecuredService {
 
     public static final String ADMIN_ROLE = "Admin";
     public static final String USER_ROLE = "User";
+    public static final String OTHER_ROLE = "Other";
 
     @Resource
     private SessionContext context;
@@ -38,6 +39,11 @@ public class SecuredService {
     @PermitAll
     public boolean hasAdminRole() {
         return context.isCallerInRole(ADMIN_ROLE);
+    }
+
+    @PermitAll
+    public boolean hasOtherRole() {
+        return context.isCallerInRole(OTHER_ROLE);
     }
 
 }

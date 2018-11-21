@@ -1,5 +1,6 @@
 package nl.ertai.elytron.example;
 
+import org.wildfly.extension.elytron.Configurable;
 import org.wildfly.security.auth.SupportLevel;
 import org.wildfly.security.auth.server.RealmIdentity;
 import org.wildfly.security.auth.server.SecurityRealm;
@@ -17,20 +18,47 @@ import java.util.*;
  * Example of custom-realm for WildFly Elytron.
  * A SecurityRealm is the entity that holds the user-accounts and which roles each user has.
  *
- * This class implements:
+ * This class implements 2 interfaces:
  * - SecurityRealm -> This is the main part that enables Elytron to check the users
+ * - Configurable -> This enables you to give parameters in the Elytron configuration to this realm
  *
  * In the SecurityRealm 3 functions are required:
  * - getCredentialAcquireSupport -> To enable Elytron to ask what credentials can be retrieved from this Realm
  * - getEvidenceVerifySupport ->    To enable Elytron to ask what evidence's can be checked with this Realm
  * - getRealmIdentity ->            To enable Elytron to get the realm-functionality for a principal.
  *
+ * In the Configurable 1 function is required:
+ * - initialize ->                  This function is called with the set parameters in the Elytron Configuration
+ *
  * The principal in the realmIdentity that is given is normally the username of the user
+ *
+ *
  */
-public class AlternativeExampleRealm implements SecurityRealm {
+public class ExampleRealm implements SecurityRealm, Configurable {
 
     private static final String GROUPS_ATTRIBUTE = "groups";
-    private static final String USER_ALT = "altuser";
+    private static final String PARAMETER_LIST_SEPARATOR = ",";
+
+    private List<String> configuredGroups;
+    private String configuredUser;
+    private String configuredPassword;
+
+    /**
+     * This function allows you to use the parameters given in the Elytron Configuration to influence your realm
+     * This function will be called when JBoss/Wildfly will startup. Please remember that not many other services,
+     * like the Datasource, are available yet.
+     *
+     * @param configuration A Key-Value-Map with all the parameters
+     */
+    public void initialize(Map<String, String> configuration) {
+        configuredUser = configuration.get("User");
+        configuredPassword = configuration.get("Password");
+
+        String configuredGroup = configuration.get("Groups");
+        if (configuredGroup != null) {
+            configuredGroups = new ArrayList<>(Arrays.asList(configuredGroup.split(PARAMETER_LIST_SEPARATOR)));
+        }
+    }
 
     /**
      * This realm does not allow acquiring credentials
@@ -87,7 +115,7 @@ public class AlternativeExampleRealm implements SecurityRealm {
              */
             public SupportLevel getCredentialAcquireSupport(Class<? extends Credential> credentialType,
                                                             String algorithmName, AlgorithmParameterSpec parameterSpec) {
-                return AlternativeExampleRealm.this.getCredentialAcquireSupport(credentialType, algorithmName, parameterSpec);
+                return ExampleRealm.this.getCredentialAcquireSupport(credentialType, algorithmName, parameterSpec);
             }
 
             /**
@@ -109,7 +137,7 @@ public class AlternativeExampleRealm implements SecurityRealm {
              * @return      Is VerifyEvidence with this evidenceType and algorithm supported?
              */
             public SupportLevel getEvidenceVerifySupport(Class<? extends Evidence> evidenceType, String algorithmName) {
-                return AlternativeExampleRealm.this.getEvidenceVerifySupport(evidenceType, algorithmName);
+                return ExampleRealm.this.getEvidenceVerifySupport(evidenceType, algorithmName);
             }
 
             /**
@@ -132,12 +160,12 @@ public class AlternativeExampleRealm implements SecurityRealm {
             }
 
             /**
-             * This realmIdentity states that the user always exist.
+             * This function defines if the user asked exists
              *
              * @return  Does the principal exists in this realm?
              */
             public boolean exists() {
-                return true;
+                return principal.getName().equals(configuredUser);
             }
 
             /**
@@ -147,8 +175,7 @@ public class AlternativeExampleRealm implements SecurityRealm {
              */
             @Override
             public AuthorizationIdentity getAuthorizationIdentity() {
-                List<String> groups = Arrays.asList("Other", "User");
-                return AuthorizationIdentity.basicIdentity(new MapAttributes(Collections.singletonMap(GROUPS_ATTRIBUTE, groups)));
+                return AuthorizationIdentity.basicIdentity(new MapAttributes(Collections.singletonMap(GROUPS_ATTRIBUTE, configuredGroups)));
             }
         };
     }
@@ -161,7 +188,7 @@ public class AlternativeExampleRealm implements SecurityRealm {
      * @return              Is this combo correct?
      */
     private boolean checkUserCredentials(final String user, final char[] password) {
-        return ((USER_ALT.equals(user)) && Arrays.equals(USER_ALT.toCharArray(), password));
+        return ((configuredUser.equals(user)) && Arrays.equals(configuredPassword.toCharArray(), password));
     }
 
 }

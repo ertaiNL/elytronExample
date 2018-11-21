@@ -2,13 +2,18 @@ echo Define the custom realm from the security-module
 ###
 /subsystem=elytron/custom-realm=DefaultRealm:add( \
     module=nl.ertai.elytron.example.security-module, \
-    class-name=nl.ertai.elytron.example.DefaultExampleRealm, \
+    class-name=nl.ertai.elytron.example.ExampleRealm, \
     configuration={ \
-        "DefaultGroup"="DefaultGroup", \
-        "SecondParameter"="SomeValue" } )
+        "User"="admin", \
+        "Password"="password", \
+        "Groups"="Admin,User" } )
 /subsystem=elytron/custom-realm=AlternativeRealm:add( \
     module=nl.ertai.elytron.example.security-module, \
-    class-name=nl.ertai.elytron.example.AlternativeExampleRealm )
+    class-name=nl.ertai.elytron.example.ExampleRealm, \
+    configuration={ \
+        "User"="user", \
+        "Password"="password", \
+        "Groups"="Other,User" } )
 
 echo Define the custom realm mapper
 ###
@@ -16,7 +21,7 @@ echo Define the custom realm mapper
     module=nl.ertai.elytron.example.security-module, \
     class-name=nl.ertai.elytron.example.ExampleRealmMapper, \
     configuration={ \
-        "AlternativeUsersStartWith"="alt" } )
+        "AlternativeUser"="user" } )
 
 echo Define the domain used in the application
 ###

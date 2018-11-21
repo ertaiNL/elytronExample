@@ -43,7 +43,7 @@ public class DefaultExampleRealm implements SecurityRealm, Configurable {
     private List<String> defaultGroups;
 
     /**
-     * This function allowes you to use the parameters given in the Elytron Configuration to influence your realm
+     * This function allows you to use the parameters given in the Elytron Configuration to influence your realm
      * This function will be called when JBoss/Wildfly will startup. Please remember that not many other services,
      * like the Datasource, are available yet.
      *

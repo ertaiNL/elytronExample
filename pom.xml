@@ -18,9 +18,11 @@
         <maven-ear-plugin.version>3.0.0</maven-ear-plugin.version>
         <maven-war-plugin.version>3.2.2</maven-war-plugin.version>
         <maven-ejb-plugin.version>3.0.1</maven-ejb-plugin.version>
+        <maven-surefire-plugin.version>3.0.0-M1</maven-surefire-plugin.version>
 
         <ejb.version>3.1</ejb.version>
         <javaee.version>7.0</javaee.version>
+        <junit.jupiter.version>5.3.1</junit.jupiter.version>
         <wildfly-elytron-integration.version>3.0.8.Final</wildfly-elytron-integration.version>
         <wildfly-elytron.version>1.1.6.Final</wildfly-elytron.version>
     </properties>
@@ -69,6 +71,21 @@
                 <version>${wildfly-elytron.version}</version>
                 <scope>provided</scope>
             </dependency>
+
+            <!-- Test dependencies -->
+            <dependency>
+                <groupId>org.junit.jupiter</groupId>
+                <artifactId>junit-jupiter-engine</artifactId>
+                <version>${junit.jupiter.version}</version>
+                <scope>test</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.junit.jupiter</groupId>
+                <artifactId>junit-jupiter-api</artifactId>
+                <version>${junit.jupiter.version}</version>
+                <scope>test</scope>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -92,6 +109,10 @@
                     <configuration>
                         <failOnMissingWebXml>false</failOnMissingWebXml>
                     </configuration>
+                </plugin>
+                <plugin>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <version>${maven-surefire-plugin.version}</version>
                 </plugin>
             </plugins>
         </pluginManagement>

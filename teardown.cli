@@ -1,20 +1,40 @@
-echo Remove the undertow configuration with the http-authentication-factory
-###
+echo ##### Remove the undertow configuration with the http-authentication-factory
 /subsystem=undertow:write-attribute(name=default-security-domain, value=other)
-/subsystem=undertow/application-security-domain=ExampleDomain:remove
-/subsystem=elytron/http-authentication-factory=ExampleDomain-http-authenticator:remove
 
-echo Remove the ejb3 configuration with the sasl-authentication-factory
-###
+if (outcome == success) of /subsystem=undertow/application-security-domain=ExampleDomain:read-resource
+    /subsystem=undertow/application-security-domain=ExampleDomain:remove
+end-if
+
+if (outcome == success) of /subsystem=elytron/http-authentication-factory=ExampleDomain-http-authenticator:read-resource
+    /subsystem=elytron/http-authentication-factory=ExampleDomain-http-authenticator:remove
+end-if
+
+echo ##### Remove the ejb3 configuration with the sasl-authentication-factory
 /subsystem=ejb3:write-attribute(name=default-security-domain, value=other)
-/subsystem=ejb3/application-security-domain=ExampleDomain:remove
-/subsystem=elytron/sasl-authentication-factory=ExampleDomain-sasl-authenticator:remove
 
-echo Remove the domain and realm
-###
-/subsystem=elytron/security-domain=ExampleDomain:remove
-/subsystem=elytron/custom-realm-mapper=ExampleRealmMapper:remove
-/subsystem=elytron/custom-realm=DefaultRealm:remove
-/subsystem=elytron/custom-realm=AlternativeRealm:remove
+if (outcome == success) of /subsystem=ejb3/application-security-domain=ExampleDomain:read-resource
+    /subsystem=ejb3/application-security-domain=ExampleDomain:remove
+end-if
+
+if (outcome == success) of /subsystem=elytron/sasl-authentication-factory=ExampleDomain-sasl-authenticator:read-resource
+    /subsystem=elytron/sasl-authentication-factory=ExampleDomain-sasl-authenticator:remove
+end-if
+
+echo ##### Remove the domain and realm
+if (outcome == success) of /subsystem=elytron/security-domain=ExampleDomain:read-resource
+    /subsystem=elytron/security-domain=ExampleDomain:remove
+end-if
+
+if (outcome == success) of /subsystem=elytron/custom-realm-mapper=ExampleRealmMapper:read-resource
+    /subsystem=elytron/custom-realm-mapper=ExampleRealmMapper:remove
+end-if
+
+if (outcome == success) of /subsystem=elytron/custom-realm=DefaultRealm:read-resource
+    /subsystem=elytron/custom-realm=DefaultRealm:remove
+end-if
+
+if (outcome == success) of /subsystem=elytron/custom-realm=AlternativeRealm:read-resource
+    /subsystem=elytron/custom-realm=AlternativeRealm:remove
+end-if
 
 reload

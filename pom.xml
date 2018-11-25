@@ -28,7 +28,7 @@
     </properties>
 
     <modules>
-        <module>security-module</module>
+        <module>module</module>
         <module>war</module>
         <module>ejb</module>
         <module>ear</module>

@@ -1,4 +1,14 @@
-echo ##### Define the custom realm from the security-module
+echo ##### Custom role mapper
+if (outcome != success) of /subsystem=elytron/custom-role-mapper=ExampleRoleMapper:read-resource
+    /subsystem=elytron/custom-role-mapper=ExampleRoleMapper:add( \
+        module=nl.ertai.elytron.example.security-module, \
+        class-name=nl.ertai.elytron.example.ExampleRoleMapper, \
+        configuration={ \
+            "RoleToMap"="Unmapped", \
+            "RoleToMapTo"="Mapped"} )
+end-if
+
+echo ##### Custom realm from the security-module
 if (outcome != success) of /subsystem=elytron/custom-realm=DefaultRealm:read-resource
     /subsystem=elytron/custom-realm=DefaultRealm:add( \
         module=nl.ertai.elytron.example.security-module, \
@@ -6,7 +16,7 @@ if (outcome != success) of /subsystem=elytron/custom-realm=DefaultRealm:read-res
         configuration={ \
             "User"="admin", \
             "Password"="password", \
-            "Groups"="Admin,User" } )
+            "Groups"="Admin,User,Unmapped" } )
 end-if
 
 if (outcome != success) of /subsystem=elytron/custom-realm=AlternativeRealm:read-resource
@@ -16,10 +26,10 @@ if (outcome != success) of /subsystem=elytron/custom-realm=AlternativeRealm:read
         configuration={ \
             "User"="user", \
             "Password"="password", \
-            "Groups"="Other,User" } )
+            "Groups"="Other,User,Unmapped" } )
 end-if
 
-echo ##### Define the custom realm mapper
+echo ##### Custom realm mapper
 if (outcome != success) of /subsystem=elytron/custom-realm-mapper=ExampleRealmMapper:read-resource
     /subsystem=elytron/custom-realm-mapper=ExampleRealmMapper:add( \
         module=nl.ertai.elytron.example.security-module, \
@@ -29,7 +39,7 @@ if (outcome != success) of /subsystem=elytron/custom-realm-mapper=ExampleRealmMa
             "RealmToMapTo"="AlternativeRealm"} )
 end-if
 
-echo ##### Define the domain used in the application
+echo ##### Security Domain used in the application
 if (outcome != success) of /subsystem=elytron/security-domain=ExampleDomain:read-resource
     /subsystem=elytron/security-domain=ExampleDomain:add( \
         permission-mapper="default-permission-mapper", \
@@ -37,10 +47,10 @@ if (outcome != success) of /subsystem=elytron/security-domain=ExampleDomain:read
         realm-mapper="ExampleRealmMapper", \
         realms=[ \
             {"realm"="DefaultRealm","role-decoder"="groups-to-roles"}, \
-            {"realm"="AlternativeRealm","role-decoder"="groups-to-roles"} ] )
+            {"realm"="AlternativeRealm","role-decoder"="groups-to-roles","role-mapper"="ExampleRoleMapper"} ] )
 end-if
 
-echo ##### Add the domain for the webservlet and set it default
+echo ##### Set Security Domain for the webservlet and set it default
 if (outcome != success) of /subsystem=elytron/http-authentication-factory=ExampleDomain-http-authenticator:read-resource
     /subsystem=elytron/http-authentication-factory=ExampleDomain-http-authenticator:add( \
         http-server-mechanism-factory=global, \
@@ -57,7 +67,7 @@ end-if
     name=default-security-domain, \
     value=ExampleDomain )
 
-echo ##### Add the domain for EJB's
+echo ##### Set Security Domain for EJB's and set it default
 if (outcome != success) of /subsystem=elytron/sasl-authentication-factory=ExampleDomain-sasl-authenticator:read-resource
     /subsystem=elytron/sasl-authentication-factory=ExampleDomain-sasl-authenticator:add( \
         sasl-server-factory=configured, \

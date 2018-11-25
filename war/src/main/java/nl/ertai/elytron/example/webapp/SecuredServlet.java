@@ -16,6 +16,8 @@ import java.io.PrintWriter;
 import static nl.ertai.elytron.example.ejb.SecuredService.ADMIN_ROLE;
 import static nl.ertai.elytron.example.ejb.SecuredService.OTHER_ROLE;
 import static nl.ertai.elytron.example.ejb.SecuredService.USER_ROLE;
+import static nl.ertai.elytron.example.ejb.SecuredService.MAPPED_ROLE;
+import static nl.ertai.elytron.example.ejb.SecuredService.UNMAPPED_ROLE;
 
 @WebServlet("/")
 @ServletSecurity(httpMethodConstraints = { @HttpMethodConstraint(value = "GET", rolesAllowed = { "User" }) })
@@ -48,12 +50,16 @@ public class SecuredServlet extends HttpServlet {
         writer.println("User role?: "  + request.isUserInRole(USER_ROLE) + RETURN);
         writer.println("Admin role?: " + request.isUserInRole(ADMIN_ROLE) + RETURN);
         writer.println("Other role?: " + request.isUserInRole(OTHER_ROLE) + RETURN);
+        writer.println("Mapped role?: " + request.isUserInRole(MAPPED_ROLE) + RETURN);
+        writer.println("Unmapped role?: " + request.isUserInRole(UNMAPPED_ROLE) + RETURN);
         writer.println(RETURN);
         writer.println("<b>Settings in EJB</b>" + RETURN);
         writer.println("Username: "    + securedService.getUserName() + RETURN);
         writer.println("User role?: "  + securedService.hasUserRole() + RETURN);
         writer.println("Admin role?: " + securedService.hasAdminRole() + RETURN);
         writer.println("Other role?: " + securedService.hasOtherRole() + RETURN);
+        writer.println("Mapped role?: " + securedService.hasMappedRole() + RETURN);
+        writer.println("Unmapped role?: " + securedService.hasUnmappedRole() + RETURN);
         writer.println("User data?: "  + getUserSecuredData() + RETURN);
         writer.println("Admin data?: " + getAdminSecuredData() + RETURN);
         writer.println("</p>");

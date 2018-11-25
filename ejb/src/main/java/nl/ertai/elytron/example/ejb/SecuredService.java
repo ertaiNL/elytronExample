@@ -12,18 +12,22 @@ public class SecuredService {
     public static final String ADMIN_ROLE = "Admin";
     public static final String USER_ROLE = "User";
     public static final String OTHER_ROLE = "Other";
+    public static final String MAPPED_ROLE = "Mapped";
+    public static final String UNMAPPED_ROLE = "Unmapped";
+
+    private static final String ROLES_ALLOWED_TEXT = "User has %s Role in EJB";
 
     @Resource
     private SessionContext context;
 
     @RolesAllowed(ADMIN_ROLE)
     public String getAdminSecuredData() {
-        return "User has " + ADMIN_ROLE + " Role in EJB";
+        return String.format(ROLES_ALLOWED_TEXT, ADMIN_ROLE);
     }
 
     @RolesAllowed(USER_ROLE)
     public String getUserSecuredData() {
-        return "User has " + USER_ROLE + " Role in EJB";
+        return String.format(ROLES_ALLOWED_TEXT, USER_ROLE);
     }
 
     @PermitAll
@@ -46,4 +50,13 @@ public class SecuredService {
         return context.isCallerInRole(OTHER_ROLE);
     }
 
+    @PermitAll
+    public boolean hasMappedRole() {
+        return context.isCallerInRole(MAPPED_ROLE);
+    }
+
+    @PermitAll
+    public boolean hasUnmappedRole() {
+        return context.isCallerInRole(UNMAPPED_ROLE);
+    }
 }

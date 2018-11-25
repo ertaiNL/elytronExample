@@ -1,15 +1,4 @@
-echo ##### Remove the undertow configuration with the http-authentication-factory
-/subsystem=undertow:write-attribute(name=default-security-domain, value=other)
-
-if (outcome == success) of /subsystem=undertow/application-security-domain=ExampleDomain:read-resource
-    /subsystem=undertow/application-security-domain=ExampleDomain:remove
-end-if
-
-if (outcome == success) of /subsystem=elytron/http-authentication-factory=ExampleDomain-http-authenticator:read-resource
-    /subsystem=elytron/http-authentication-factory=ExampleDomain-http-authenticator:remove
-end-if
-
-echo ##### Remove the ejb3 configuration with the sasl-authentication-factory
+echo ##### Set Security Domain for EJB's and set it default
 /subsystem=ejb3:write-attribute(name=default-security-domain, value=other)
 
 if (outcome == success) of /subsystem=ejb3/application-security-domain=ExampleDomain:read-resource
@@ -20,21 +9,39 @@ if (outcome == success) of /subsystem=elytron/sasl-authentication-factory=Exampl
     /subsystem=elytron/sasl-authentication-factory=ExampleDomain-sasl-authenticator:remove
 end-if
 
-echo ##### Remove the domain and realm
+echo ##### Set Security Domain for the webservlet and set it default
+/subsystem=undertow:write-attribute(name=default-security-domain, value=other)
+
+if (outcome == success) of /subsystem=undertow/application-security-domain=ExampleDomain:read-resource
+    /subsystem=undertow/application-security-domain=ExampleDomain:remove
+end-if
+
+if (outcome == success) of /subsystem=elytron/http-authentication-factory=ExampleDomain-http-authenticator:read-resource
+    /subsystem=elytron/http-authentication-factory=ExampleDomain-http-authenticator:remove
+end-if
+
+echo ##### Security Domain used in the application
 if (outcome == success) of /subsystem=elytron/security-domain=ExampleDomain:read-resource
     /subsystem=elytron/security-domain=ExampleDomain:remove
 end-if
 
+echo ##### Custom realm mapper
 if (outcome == success) of /subsystem=elytron/custom-realm-mapper=ExampleRealmMapper:read-resource
     /subsystem=elytron/custom-realm-mapper=ExampleRealmMapper:remove
 end-if
 
+echo ##### Custom realm from the security-module
 if (outcome == success) of /subsystem=elytron/custom-realm=DefaultRealm:read-resource
     /subsystem=elytron/custom-realm=DefaultRealm:remove
 end-if
 
 if (outcome == success) of /subsystem=elytron/custom-realm=AlternativeRealm:read-resource
     /subsystem=elytron/custom-realm=AlternativeRealm:remove
+end-if
+
+echo ##### Custom role mapper
+if (outcome == success) of /subsystem=elytron/custom-role-mapper=ExampleRoleMapper:read-resource
+    /subsystem=elytron/custom-role-mapper=ExampleRoleMapper:remove
 end-if
 
 reload

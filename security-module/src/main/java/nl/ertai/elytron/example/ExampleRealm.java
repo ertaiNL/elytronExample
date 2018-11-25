@@ -36,12 +36,23 @@ import java.util.*;
  */
 public class ExampleRealm implements SecurityRealm, Configurable {
 
+    /**
+     * The name of the attribute to set in the Identity with the groups in it
+     */
     private static final String GROUPS_ATTRIBUTE = "groups";
-    private static final String PARAMETER_LIST_SEPARATOR = ",";
 
-    private List<String> configuredGroups;
+    /**
+     * The username of the user in this realm.
+     */
     private String configuredUser;
+    /**
+     * The username of the user in this realm.
+     */
     private String configuredPassword;
+    /**
+     * The groups that will be set for the user in this realm
+     */
+    private List<String> configuredGroups;
 
     /**
      * This function allows you to use the parameters given in the Elytron Configuration to influence your realm
@@ -56,7 +67,7 @@ public class ExampleRealm implements SecurityRealm, Configurable {
 
         String configuredGroup = configuration.get("Groups");
         if (configuredGroup != null) {
-            configuredGroups = new ArrayList<>(Arrays.asList(configuredGroup.split(PARAMETER_LIST_SEPARATOR)));
+            configuredGroups = new ArrayList<>(Arrays.asList(configuredGroup.split(",")));
         }
     }
 

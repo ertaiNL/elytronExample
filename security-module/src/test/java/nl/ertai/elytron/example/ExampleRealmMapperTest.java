@@ -22,24 +22,36 @@ class ExampleRealmMapperTest {
     @BeforeEach
     void init() {
         exampleRealmMapper = new ExampleRealmMapper();
-        Map<String, String> configuration = new HashMap<>();
-        configuration.put("AlternativeUser", ALTERNATIVE_USER.getName());
-        exampleRealmMapper.initialize(configuration);
     }
 
     @Test
     void testDefaultRealm() {
+        configureExampleRealmMapper();
         Assertions.assertNull(exampleRealmMapper.getRealmMapping(NONE_USER, EVIDENCE));
     }
 
     @Test
     void testNormalRealm() {
+        configureExampleRealmMapper();
         Assertions.assertNull(exampleRealmMapper.getRealmMapping(USER, EVIDENCE));
     }
 
     @Test
     void testAlternativeRealm() {
+        configureExampleRealmMapper();
         Assertions.assertEquals(ALTERNATIVE_REALM, exampleRealmMapper.getRealmMapping(ALTERNATIVE_USER, EVIDENCE));
+    }
+
+    @Test
+    void testNoUserSet() {
+        Assertions.assertNull(exampleRealmMapper.getRealmMapping(USER, EVIDENCE));
+    }
+
+    private void configureExampleRealmMapper() {
+        Map<String, String> configuration = new HashMap<>();
+        configuration.put("UserToMap", ALTERNATIVE_USER.getName());
+        configuration.put("RealmToMapTo", ALTERNATIVE_REALM);
+        exampleRealmMapper.initialize(configuration);
     }
 
 }

@@ -13,10 +13,15 @@ import java.util.Map;
  */
 public class ExampleRealmMapper implements RealmMapper, Configurable {
 
-    private static final String ALTERNATIVE_REALM = "AlternativeRealm";
-    private static final String PARAMETER_ALTERNATIVE_USER = "AlternativeUser";
+    /**
+     * The user we want to map to a different realm then the default.
+     */
+    private String userToMap;
 
-    private String alternativeUser;
+    /**
+     * The realm to map the userToMap to.
+     */
+    private String realmToMapTo;
 
     /**
      * This function allows you to use the parameters given in the Elytron Configuration to influence your realmMapper
@@ -27,7 +32,8 @@ public class ExampleRealmMapper implements RealmMapper, Configurable {
      */
     @Override
     public void initialize(Map<String, String> configuration) {
-        alternativeUser = configuration.get(PARAMETER_ALTERNATIVE_USER);
+        userToMap = configuration.get("UserToMap");
+        realmToMapTo = configuration.get("RealmToMapTo");
     }
 
     /**
@@ -40,8 +46,8 @@ public class ExampleRealmMapper implements RealmMapper, Configurable {
      */
     @Override
     public String getRealmMapping(Principal principal, Evidence evidence) {
-        if (alternativeUser != null && principal.getName().equals(alternativeUser)) {
-            return ALTERNATIVE_REALM;
+        if (userToMap != null && principal.getName().equals(userToMap)) {
+            return realmToMapTo;
         } else {
             return null;
         }

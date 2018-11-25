@@ -21,7 +21,8 @@ echo Define the custom realm mapper
     module=nl.ertai.elytron.example.security-module, \
     class-name=nl.ertai.elytron.example.ExampleRealmMapper, \
     configuration={ \
-        "AlternativeUser"="user" } )
+        "UserToMap"="user", \
+        "RealmToMapTo"="AlternativeRealm" } )
 
 echo Define the domain used in the application
 ###

@@ -13,9 +13,9 @@ class ExampleRealmMapperTest {
 
     private static final Evidence EVIDENCE = null;
     private static final String ALTERNATIVE_REALM = "AlternativeRealm";
-    private static final String PARAMETER_ALTERNATIVE_USER = "AlternativeUser";
     private static final Principal USER = () -> "Test";
     private static final Principal ALTERNATIVE_USER = () -> "AltTest";
+    private static final Principal NONE_USER = () -> "NoneUser";
 
     private ExampleRealmMapper exampleRealmMapper;
 
@@ -23,12 +23,17 @@ class ExampleRealmMapperTest {
     void init() {
         exampleRealmMapper = new ExampleRealmMapper();
         Map<String, String> configuration = new HashMap<>();
-        configuration.put(PARAMETER_ALTERNATIVE_USER, ALTERNATIVE_USER.getName());
+        configuration.put("AlternativeUser", ALTERNATIVE_USER.getName());
         exampleRealmMapper.initialize(configuration);
     }
 
     @Test
     void testDefaultRealm() {
+        Assertions.assertNull(exampleRealmMapper.getRealmMapping(NONE_USER, EVIDENCE));
+    }
+
+    @Test
+    void testNormalRealm() {
         Assertions.assertNull(exampleRealmMapper.getRealmMapping(USER, EVIDENCE));
     }
 

@@ -12,7 +12,10 @@ import org.wildfly.security.evidence.PasswordGuessEvidence;
 
 import java.security.Principal;
 import java.security.spec.AlgorithmParameterSpec;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Example of custom-realm for WildFly Elytron.
@@ -67,7 +70,7 @@ public class ExampleRealm implements SecurityRealm, Configurable {
 
         String configuredGroup = configuration.get("Groups");
         if (configuredGroup != null) {
-            configuredGroups = new ArrayList<>(Arrays.asList(configuredGroup.split(",")));
+            configuredGroups = Arrays.asList(configuredGroup.split(","));
         }
     }
 
@@ -77,7 +80,7 @@ public class ExampleRealm implements SecurityRealm, Configurable {
      * @param credentialType    The interface the possibly retrieved credential needs to implement
      * @param algorithmName     Does the Acquired Credential support passwords encrypted with this algorithm?
      * @param parameterSpec     Other parameters that the credentialType expects
-     * @return      Is this retrieving credentials with this credentialType, algorithm and parameterSpec supported?
+     * @return Is this retrieving credentials with this credentialType, algorithm and parameterSpec supported?
      */
     public SupportLevel getCredentialAcquireSupport(Class<? extends Credential> credentialType, String algorithmName,
                                                     AlgorithmParameterSpec parameterSpec) {
@@ -89,10 +92,14 @@ public class ExampleRealm implements SecurityRealm, Configurable {
      *
      * @param evidenceType      The interface that should be implemented
      * @param algorithmName     Does the VerifyEvidence support passwords encrypted with this algorithm?
-     * @return      Is VerifyEvidence with this evidenceType and algorithm supported?
+     * @return Is VerifyEvidence with this evidenceType and algorithm supported?
      */
     public SupportLevel getEvidenceVerifySupport(Class<? extends Evidence> evidenceType, String algorithmName) {
-        return PasswordGuessEvidence.class.isAssignableFrom(evidenceType) ? SupportLevel.POSSIBLY_SUPPORTED : SupportLevel.UNSUPPORTED;
+        if (PasswordGuessEvidence.class.isAssignableFrom(evidenceType)) {
+            return SupportLevel.POSSIBLY_SUPPORTED;
+        } else {
+            return SupportLevel.UNSUPPORTED;
+        }
     }
 
     /**
@@ -100,7 +107,7 @@ public class ExampleRealm implements SecurityRealm, Configurable {
      * The principal is most of the time the username
      *
      * @param principal     The principal of the user
-     * @return              The realmIdentity
+     * @return The realmIdentity
      */
     @Override
     public RealmIdentity getRealmIdentity(final Principal principal) {
@@ -122,10 +129,11 @@ public class ExampleRealm implements SecurityRealm, Configurable {
              * @param credentialType    The interface the possibly retrieved credential needs to implement
              * @param algorithmName     Does the Acquired Credential support passwords encrypted with this algorithm?
              * @param parameterSpec     Other parameters that the credentialType expects
-             * @return      Is this retrieving credentials with this credentialType, algorithm and parameterSpec supported?
+             * @return Is this retrieving credentials with this credentialType, algorithm and parameterSpec supported?
              */
             public SupportLevel getCredentialAcquireSupport(Class<? extends Credential> credentialType,
-                                                            String algorithmName, AlgorithmParameterSpec parameterSpec) {
+                                                            String algorithmName,
+                                                            AlgorithmParameterSpec parameterSpec) {
                 return ExampleRealm.this.getCredentialAcquireSupport(credentialType, algorithmName, parameterSpec);
             }
 
@@ -186,7 +194,8 @@ public class ExampleRealm implements SecurityRealm, Configurable {
              */
             @Override
             public AuthorizationIdentity getAuthorizationIdentity() {
-                return AuthorizationIdentity.basicIdentity(new MapAttributes(Collections.singletonMap(GROUPS_ATTRIBUTE, configuredGroups)));
+                Map<String, List<String>> groups = Collections.singletonMap(GROUPS_ATTRIBUTE, configuredGroups);
+                return AuthorizationIdentity.basicIdentity(new MapAttributes(groups));
             }
         };
     }

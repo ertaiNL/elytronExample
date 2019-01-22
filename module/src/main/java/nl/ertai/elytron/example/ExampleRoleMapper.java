@@ -40,6 +40,6 @@ public class ExampleRoleMapper implements RoleMapper, Configurable {
     }
 
     private String convertRole(String role) {
-        return role.equals(roleToMap)?roleToMapTo:role;
+        return role.equals(roleToMap) ? roleToMapTo : role;
     }
 }

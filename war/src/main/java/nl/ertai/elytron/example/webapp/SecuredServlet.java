@@ -13,15 +13,11 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-import static nl.ertai.elytron.example.ejb.SecuredService.ADMIN_ROLE;
-import static nl.ertai.elytron.example.ejb.SecuredService.OTHER_ROLE;
-import static nl.ertai.elytron.example.ejb.SecuredService.USER_ROLE;
-import static nl.ertai.elytron.example.ejb.SecuredService.MAPPED_ROLE;
-import static nl.ertai.elytron.example.ejb.SecuredService.UNMAPPED_ROLE;
-
 @WebServlet("/")
 @ServletSecurity(httpMethodConstraints = { @HttpMethodConstraint(value = "GET", rolesAllowed = { "User" }) })
 public class SecuredServlet extends HttpServlet {
+
+    private static final long serialVersionUID = 1L;
 
     private static final String RETURN = "<br />";
 
@@ -47,11 +43,11 @@ public class SecuredServlet extends HttpServlet {
         writer.println("<p>");
         writer.println("<b>Settings in Servlet</b>" + RETURN);
         writer.println("Username: "    + request.getUserPrincipal().getName() + RETURN);
-        writer.println("User role?: "  + request.isUserInRole(USER_ROLE) + RETURN);
-        writer.println("Admin role?: " + request.isUserInRole(ADMIN_ROLE) + RETURN);
-        writer.println("Other role?: " + request.isUserInRole(OTHER_ROLE) + RETURN);
-        writer.println("Mapped role?: " + request.isUserInRole(MAPPED_ROLE) + RETURN);
-        writer.println("Unmapped role?: " + request.isUserInRole(UNMAPPED_ROLE) + RETURN);
+        writer.println("User role?: "  + request.isUserInRole(SecuredService.USER_ROLE) + RETURN);
+        writer.println("Admin role?: " + request.isUserInRole(SecuredService.ADMIN_ROLE) + RETURN);
+        writer.println("Other role?: " + request.isUserInRole(SecuredService.OTHER_ROLE) + RETURN);
+        writer.println("Mapped role?: " + request.isUserInRole(SecuredService.MAPPED_ROLE) + RETURN);
+        writer.println("Unmapped role?: " + request.isUserInRole(SecuredService.UNMAPPED_ROLE) + RETURN);
         writer.println(RETURN);
         writer.println("<b>Settings in EJB</b>" + RETURN);
         writer.println("Username: "    + securedService.getUserName() + RETURN);

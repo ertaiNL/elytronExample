@@ -10,7 +10,7 @@ if (outcome == success) of /subsystem=elytron/sasl-authentication-factory=Exampl
 end-if
 
 echo ##### Set Security Domain for the webservlet and set it default
-/subsystem=undertow:write-attribute(name=default-security-domain, value=other)
+/subsystem=undertow:undefine-attribute(name=default-security-domain)
 
 if (outcome == success) of /subsystem=undertow/application-security-domain=ExampleDomain:read-resource
     /subsystem=undertow/application-security-domain=ExampleDomain:remove
@@ -35,8 +35,19 @@ if (outcome == success) of /subsystem=elytron/custom-realm=DefaultRealm:read-res
     /subsystem=elytron/custom-realm=DefaultRealm:remove
 end-if
 
-if (outcome == success) of /subsystem=elytron/custom-realm=AlternativeRealm:read-resource
-    /subsystem=elytron/custom-realm=AlternativeRealm:remove
+if (outcome == success) of /subsystem=elytron/custom-realm=JNDIRealm:read-resource
+    /subsystem=elytron/custom-realm=JNDIRealm:remove
+end-if
+
+echo ##### JNDI variabeles for JNDI Realm
+if (outcome == success) of /subsystem=naming/binding=java\:global\/example\/user:read-resource
+  /subsystem=naming/binding=java\:global\/example\/user:remove
+end-if
+if (outcome == success) of /subsystem=naming/binding=java\:global\/example\/password:read-resource
+  /subsystem=naming/binding=java\:global\/example\/password:remove
+end-if
+if (outcome == success) of /subsystem=naming/binding=java\:global\/example\/groups:read-resource
+  /subsystem=naming/binding=java\:global\/example\/groups:remove
 end-if
 
 echo ##### Custom role mapper

@@ -19,10 +19,12 @@ mvn clean verify
 
 When Wildfly is started run the following in the CLI to install the module
 ```
-module add --name=nl.ertai.elytron.example.security-module --resources=security-module-1.0.0-SNAPSHOT.jar --dependencies=org.wildfly.security.elytron,org.wildfly.extension.elytron
+module add --name=nl.ertai.elytron.example.security-module --resources=security-module-<VERSION>.jar --dependencies=org.wildfly.security.elytron,org.wildfly.extension.elytron,javax.api,org.slf4j
 ```
 Make a backup of your standalone.xml.
 Then restart Wildfly and run the `setup.cli` in the root of this project to configure Wildfly.
+
+The page that is served can then be found at `http://localhost:8080/secured`
 
 ## How to remove ##
 

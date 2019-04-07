@@ -1,6 +1,7 @@
 package nl.ertai.elytron.example;
 
-import org.wildfly.extension.elytron.Configurable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.wildfly.security.auth.SupportLevel;
 import org.wildfly.security.auth.server.RealmIdentity;
 import org.wildfly.security.auth.server.SecurityRealm;
@@ -10,6 +11,8 @@ import org.wildfly.security.credential.Credential;
 import org.wildfly.security.evidence.Evidence;
 import org.wildfly.security.evidence.PasswordGuessEvidence;
 
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
 import java.security.Principal;
 import java.security.spec.AlgorithmParameterSpec;
 import java.util.Arrays;
@@ -19,11 +22,11 @@ import java.util.Map;
 
 /**
  * Example of custom-realm for WildFly Elytron.
- * A SecurityRealm is the entity that holds the user-accounts and which roles each user has.
+ * A SecurityRealm is the entity that holds the user-accounts and which roles each user has. The Realm get it's
+ * configuration via JNDI-variables. It is also possible to get a datasource the same way if required.
  *
  * This class implements 2 interfaces:
  * - SecurityRealm -> This is the main part that enables Elytron to check the users
- * - Configurable -> This enables you to give parameters in the Elytron configuration to this realm
  *
  * In the SecurityRealm 3 functions are required:
  * - getCredentialAcquireSupport -> To enable Elytron to ask what credentials can be retrieved from this Realm
@@ -37,7 +40,9 @@ import java.util.Map;
  *
  *
  */
-public class ExampleRealm implements SecurityRealm, Configurable {
+public class ExampleJNDIRealm implements SecurityRealm {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(ExampleJNDIRealm.class);
 
     /**
      * The name of the attribute to set in the Identity with the groups in it
@@ -58,19 +63,20 @@ public class ExampleRealm implements SecurityRealm, Configurable {
     private List<String> configuredGroups;
 
     /**
-     * This function allows you to use the parameters given in the Elytron Configuration to influence your realm
-     * This function will be called when JBoss/Wildfly will startup. Please remember that not many other services,
-     * like the Datasource, are available yet.
-     *
-     * @param configuration A Key-Value-Map with all the parameters
+     * This constructor retrieves the JNDI-variables.
      */
-    public void initialize(Map<String, String> configuration) {
-        configuredUser = configuration.get("User");
-        configuredPassword = configuration.get("Password");
+    public ExampleJNDIRealm() {
+        try {
+            InitialContext ctx = new InitialContext();
+            configuredUser = (String) ctx.lookup("java:/global/example/user");
+            configuredPassword = (String) ctx.lookup("java:/global/example/password");
 
-        String groups = configuration.get("Groups");
-        if (groups != null) {
-            configuredGroups = Arrays.asList(groups.split(","));
+            String groups = (String) ctx.lookup("java:/global/example/groups");
+            if (groups != null) {
+                configuredGroups = Arrays.asList(groups.split(","));
+            }
+        } catch (NamingException e) {
+            LOGGER.error("JNDI variables not found", e);
         }
     }
 
@@ -134,7 +140,7 @@ public class ExampleRealm implements SecurityRealm, Configurable {
             public SupportLevel getCredentialAcquireSupport(Class<? extends Credential> credentialType,
                                                             String algorithmName,
                                                             AlgorithmParameterSpec parameterSpec) {
-                return ExampleRealm.this.getCredentialAcquireSupport(credentialType, algorithmName, parameterSpec);
+                return ExampleJNDIRealm.this.getCredentialAcquireSupport(credentialType, algorithmName, parameterSpec);
             }
 
             /**
@@ -156,7 +162,7 @@ public class ExampleRealm implements SecurityRealm, Configurable {
              * @return      Is VerifyEvidence with this evidenceType and algorithm supported?
              */
             public SupportLevel getEvidenceVerifySupport(Class<? extends Evidence> evidenceType, String algorithmName) {
-                return ExampleRealm.this.getEvidenceVerifySupport(evidenceType, algorithmName);
+                return ExampleJNDIRealm.this.getEvidenceVerifySupport(evidenceType, algorithmName);
             }
 
             /**

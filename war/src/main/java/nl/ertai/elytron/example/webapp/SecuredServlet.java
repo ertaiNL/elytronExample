@@ -12,6 +12,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.security.Principal;
+import java.util.Optional;
 
 @WebServlet("/")
 @ServletSecurity(httpMethodConstraints = { @HttpMethodConstraint(value = "GET", rolesAllowed = { "User" }) })
@@ -42,7 +44,7 @@ public class SecuredServlet extends HttpServlet {
         writer.println("<h1>Secured Servlet</h1>");
         writer.println("<p>");
         writer.println("<b>Settings in Servlet</b>" + RETURN);
-        writer.println("Username: "    + request.getUserPrincipal().getName() + RETURN);
+        writer.println("Username: "    + getUserNameFromPrincipal(request).orElse("anonymous") + RETURN);
         writer.println("User role?: "  + request.isUserInRole(SecuredService.USER_ROLE) + RETURN);
         writer.println("Admin role?: " + request.isUserInRole(SecuredService.ADMIN_ROLE) + RETURN);
         writer.println("Other role?: " + request.isUserInRole(SecuredService.OTHER_ROLE) + RETURN);
@@ -77,5 +79,10 @@ public class SecuredServlet extends HttpServlet {
         } catch (EJBAccessException e) {
             return "Not Allowed";
         }
+    }
+
+    private static Optional<String> getUserNameFromPrincipal(HttpServletRequest request) {
+        Principal p = request.getUserPrincipal();
+        return p != null ? Optional.of(p.getName()) : Optional.empty();
     }
 }

@@ -19,14 +19,23 @@ if (outcome != success) of /subsystem=elytron/custom-realm=DefaultRealm:read-res
             "Groups"="Admin,User,Unmapped" } )
 end-if
 
-if (outcome != success) of /subsystem=elytron/custom-realm=AlternativeRealm:read-resource
-    /subsystem=elytron/custom-realm=AlternativeRealm:add( \
+echo ##### JNDI variabeles for JNDI Realm
+if (outcome != success) of /subsystem=naming/binding=java\:global\/example\/user:read-resource
+  /subsystem=naming/binding=java\:global\/example\/user:add(binding-type=simple, value="user")
+end-if
+if (outcome != success) of /subsystem=naming/binding=java\:global\/example\/password:read-resource
+  /subsystem=naming/binding=java\:global\/example\/password:add(binding-type=simple, value="password")
+end-if
+if (outcome != success) of /subsystem=naming/binding=java\:global\/example\/groups:read-resource
+  /subsystem=naming/binding=java\:global\/example\/groups:add(binding-type=simple, value="Other,User,Unmapped")
+end-if
+
+
+echo ##### Custom realm from the security-module
+if (outcome != success) of /subsystem=elytron/custom-realm=JNDIRealm:read-resource
+    /subsystem=elytron/custom-realm=JNDIRealm:add( \
         module=nl.ertai.elytron.example.security-module, \
-        class-name=nl.ertai.elytron.example.ExampleRealm, \
-        configuration={ \
-            "User"="user", \
-            "Password"="password", \
-            "Groups"="Other,User,Unmapped" } )
+        class-name=nl.ertai.elytron.example.ExampleJNDIRealm )
 end-if
 
 echo ##### Custom realm mapper
@@ -36,7 +45,7 @@ if (outcome != success) of /subsystem=elytron/custom-realm-mapper=ExampleRealmMa
         class-name=nl.ertai.elytron.example.ExampleRealmMapper, \
         configuration={ \
             "UserToMap"="user", \
-            "RealmToMapTo"="AlternativeRealm"} )
+            "RealmToMapTo"="JNDIRealm"} )
 end-if
 
 echo ##### Security Domain used in the application
@@ -47,7 +56,7 @@ if (outcome != success) of /subsystem=elytron/security-domain=ExampleDomain:read
         realm-mapper="ExampleRealmMapper", \
         realms=[ \
             {"realm"="DefaultRealm","role-decoder"="groups-to-roles"}, \
-            {"realm"="AlternativeRealm","role-decoder"="groups-to-roles","role-mapper"="ExampleRoleMapper"} ] )
+            {"realm"="JNDIRealm","role-decoder"="groups-to-roles","role-mapper"="ExampleRoleMapper"} ] )
 end-if
 
 echo ##### Set Security Domain for the webservlet and set it default

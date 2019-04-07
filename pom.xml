@@ -7,7 +7,7 @@
     <groupId>nl.ertai.elytron.example</groupId>
     <artifactId>parent</artifactId>
     <packaging>pom</packaging>
-    <version>1.0.0</version>
+    <version>1.1.0</version>
 
     <properties>
         <!-- As Wildfly 11 is java 8 based we compile back to that version -->

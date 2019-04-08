@@ -4,6 +4,7 @@ import nl.ertai.elytron.example.ejb.SecuredService;
 
 import javax.ejb.EJB;
 import javax.ejb.EJBAccessException;
+import javax.servlet.ServletException;
 import javax.servlet.annotation.HttpMethodConstraint;
 import javax.servlet.annotation.ServletSecurity;
 import javax.servlet.annotation.WebServlet;
@@ -29,9 +30,12 @@ public class SecuredServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) {
         try {
+            if (request.getParameterValues("logout") != null) {
+                request.logout();
+            }
             PrintWriter writer = response.getWriter();
             printPage(writer, request);
-        } catch (IOException e) {
+        } catch (IOException | ServletException e) {
             //do nothing
         }
 
@@ -61,6 +65,7 @@ public class SecuredServlet extends HttpServlet {
         writer.println("User data?: "  + getUserSecuredData() + RETURN);
         writer.println("Admin data?: " + getAdminSecuredData() + RETURN);
         writer.println("</p>");
+        writer.println(getAuthenticationLink(request));
         writer.println("</body>");
         writer.println("</html>");
     }
@@ -84,5 +89,13 @@ public class SecuredServlet extends HttpServlet {
     private static Optional<String> getUserNameFromPrincipal(HttpServletRequest request) {
         Principal p = request.getUserPrincipal();
         return p != null ? Optional.of(p.getName()) : Optional.empty();
+    }
+
+    private static String getAuthenticationLink(HttpServletRequest request) {
+        if (request.getUserPrincipal() != null) {
+            return "<a href='/?logout=logout'>Logout</a>";
+        } else {
+            return "<a href='/secured'>Login</a>";
+        }
     }
 }

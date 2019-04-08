@@ -16,6 +16,7 @@
         <dependency>
             <groupId>nl.ertai.elytron.example</groupId>
             <artifactId>elytron-example-ejb</artifactId>
+            <scope>provided</scope>
             <type>ejb</type>
         </dependency>
 
@@ -23,6 +24,7 @@
         <dependency>
             <groupId>javax</groupId>
             <artifactId>javaee-api</artifactId>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 

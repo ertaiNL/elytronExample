@@ -25,6 +25,7 @@ Make a backup of your standalone.xml.
 Then restart Wildfly and run the `setup.cli` in the root of this project to configure Wildfly.
 
 The page that is served can then be found at `http://localhost:8080/secured`
+The users that are available are `admin` and `user`. Both have password `password`
 
 ## How to remove ##
 
